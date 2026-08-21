@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employment Readiness Questionnaire</title>
+<style>
+  :root{
+    --purple:#673AB7;
+    --purple-dark:#5c2d91;
+    --bg:#F0EBF8;
+    --card:#ffffff;
+    --border:#dadce0;
+    --border-focus:#673AB7;
+    --text:#202124;
+    --text-secondary:#5f6368;
+    --required:#d93025;
+    --green:#188038;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    padding-bottom:60px;
+  }
+  .top-bar{ height:10px; background:var(--purple); }
+  .container{ max-width:700px; margin:0 auto; padding:24px 16px 60px; }
+  .header-card{
+    background:var(--card);
+    border-radius:8px;
+    border-top:10px solid var(--purple);
+    box-shadow:0 1px 2px rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+    padding:24px 24px 20px;
+    margin-bottom:16px;
+  }
+  .header-card h1{ font-size:26px; font-weight:400; margin:0 0 8px; }
+  .header-card p{ font-size:14px; line-height:1.5; margin:0 0 14px; }
+  .meta-line{ font-size:13px; color:var(--text-secondary); border-top:1px solid var(--border); padding-top:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+  .required-note{ font-size:13px; color:var(--required); margin-top:10px; }
+  .card{
+    background:var(--card);
+    border-radius:8px;
+    box-shadow:0 1px 2px rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+    padding:24px;
+    margin-bottom:16px;
+  }
+  .section-title{ font-size:16px; font-weight:700; color:var(--purple-dark); margin:0 0 4px; }
+  .section-sub{ font-size:13px; color:var(--text-secondary); margin:0 0 4px; }
+  .question-block{ padding:20px 0; border-bottom:1px solid var(--border); }
+  .question-block:last-child{ border-bottom:none; padding-bottom:0; }
+  .question-block:first-of-type{ padding-top:4px; }
+  .q-title{ font-size:15px; font-weight:400; margin:0 0 12px; }
+  .q-title .req{ color:var(--required); margin-left:2px; }
+  .option-row{ display:flex; align-items:center; padding:8px 4px; font-size:14px; cursor:pointer; }
+  .option-row input[type="radio"], .option-row input[type="checkbox"]{
+    width:18px; height:18px; margin-right:14px; accent-color:var(--purple); flex-shrink:0;
+  }
+  .scale-row{ display:flex; align-items:center; justify-content:space-between; gap:4px; max-width:480px; }
+  .scale-col{ display:flex; flex-direction:column; align-items:center; font-size:13px; color:var(--text-secondary); }
+  .scale-col input{ accent-color:var(--purple); width:18px; height:18px; margin-bottom:6px; }
+  .scale-labels{ display:flex; justify-content:space-between; max-width:480px; font-size:12px; color:var(--text-secondary); margin-top:4px; }
+  .text-line{
+    border:none; border-bottom:1px solid var(--border); width:100%; max-width:480px;
+    padding:6px 2px; font-size:14px; font-family:inherit; background:transparent;
+  }
+  .text-line:focus{ outline:none; border-bottom:2px solid var(--border-focus); }
+  .text-area{
+    border:none; border-bottom:1px solid var(--border); width:100%; max-width:560px;
+    padding:6px 2px; font-size:14px; font-family:inherit; background:transparent; resize:vertical; min-height:36px;
+  }
+  .text-area:focus{ outline:none; border-bottom:2px solid var(--border-focus); }
+  .submit-row{ display:flex; justify-content:space-between; align-items:center; margin-top:8px; }
+  .btn{
+    background:var(--purple); color:#fff; border:none; padding:10px 28px; border-radius:4px;
+    font-size:14px; font-weight:500; cursor:pointer; font-family:inherit;
+  }
+  .btn:hover{ background:var(--purple-dark); }
+  .btn:disabled{ background:#b7a6d6; cursor:default; }
+  .btn-text{
+    background:none; border:none; color:var(--purple); font-size:14px; font-weight:500;
+    cursor:pointer; padding:8px 4px; font-family:inherit;
+  }
+  .btn-text:hover{ text-decoration:underline; }
+  .footer-note{ text-align:center; font-size:12px; color:var(--text-secondary); margin-top:24px; line-height:1.6; }
+  .error-banner{
+    background:#FCE8E6; border:1px solid #d93025; color:#a50e0e; border-radius:8px;
+    padding:12px 16px; font-size:13px; margin-bottom:16px; display:none;
+  }
+  .hidden{ display:none !important; }
+  .confirm-icon{ width:56px; height:56px; border-radius:50%; background:#E6F4EA; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; }
+  .confirm-icon svg{ width:28px; height:28px; }
+  .code-box{
+    background:#F3E8FF; border:1px dashed var(--purple); border-radius:8px; padding:14px 16px;
+    text-align:center; margin:16px 0; font-size:13px; color:var(--purple-dark);
+  }
+  .code-box .code{ font-size:22px; font-weight:700; letter-spacing:2px; margin-top:4px; font-family:monospace; }
+  .answer-row{ padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; }
+  .answer-row:last-child{ border-bottom:none; }
+  .answer-row .q{ color:var(--text-secondary); margin-bottom:2px; }
+  .answer-row .a{ font-size:14px; }
+  .lookup-row{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .nav-links{ display:flex; justify-content:center; gap:20px; margin-bottom:16px; flex-wrap:wrap; }
+  .nav-links button{ background:none; border:none; color:var(--purple-dark); font-size:13px; cursor:pointer; text-decoration:underline; font-family:inherit; padding:4px; }
+  .stat-pill{ display:inline-block; background:var(--purple); color:#fff; border-radius:16px; padding:4px 14px; font-size:13px; font-weight:500; }
+  .response-item{ border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:12px; font-size:13px; }
+  .response-item .meta{ color:var(--text-secondary); margin-bottom:8px; font-size:12px; }
+  .spinner{ font-size:13px; color:var(--text-secondary); text-align:center; padding:20px; }
+</style>
+</head>
+<body>
+  <div class="top-bar"></div>
+  <div class="container">
+
+    <div class="nav-links">
+      <button type="button" onclick="showView('form')">Fill in the form</button>
+      <button type="button" onclick="showView('lookup')">View my saved responses</button>
+      <button type="button" onclick="showView('all')">View all responses (Team 11)</button>
+    </div>
+
+    <div class="error-banner" id="errorBanner"></div>
+
+    <!-- ===================== FORM VIEW ===================== -->
+    <div id="view-form">
+      <div class="header-card">
+        <h1>Employment Readiness Questionnaire</h1>
+        <p>
+          This survey is part of research for a mobile-first employment-readiness platform for young
+          people from underprivileged townships. Your answers help us understand how you search for
+          jobs, what gets in the way, and what would make the process easier. It should take about
+          5 minutes. Your responses are saved so you (and the research team) can view them again later.
+        </p>
+        <div class="meta-line">
+          <span>Team 11 &nbsp;•&nbsp; Challenge 8: Helping Young People Prepare for Employment</span>
+        </div>
+        <div class="required-note">* Indicates a required question</div>
+      </div>
+
+      <form id="quizForm">
+
+        <div class="card">
+          <div class="section-title">Your email address</div>
+          <div class="question-block">
+            <p class="q-title">Enter your email address so you can view your saved responses later.<span class="req">*</span></p>
+            <input type="email" class="text-line" name="email" id="email" placeholder="you@example.com" autocomplete="email" required>
+            <p style="font-size:12px;color:var(--text-secondary);margin:8px 0 0;">
+              Use the same email address whenever you want to view your saved responses.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Section 1 — About you</div>
+
+          <div class="question-block">
+            <p class="q-title">What is your age range?<span class="req">*</span></p>
+            <label class="option-row"><input type="radio" name="age" value="15–18"> 15–18</label>
+            <label class="option-row"><input type="radio" name="age" value="19–24"> 19–24</label>
+            <label class="option-row"><input type="radio" name="age" value="25–30"> 25–30</label>
+            <label class="option-row"><input type="radio" name="age" value="30+"> 30+</label>
+          </div>
+
+          <div class="question-block">
+            <p class="q-title">What is your highest level of education?<span class="req">*</span></p>
+            <label class="option-row"><input type="radio" name="edu" value="Some high school"> Some high school</label>
+            <label class="option-row"><input type="radio" name="edu" value="Matric / Grade 12"> Matric / Grade 12</label>
+            <label class="option-row"><input type="radio" name="edu" value="TVET / college certificate"> TVET / college certificate</label>
+            <label class="option-row"><input type="radio" name="edu" value="Diploma or degree"> Diploma or degree</label>
+          </div>
+
+          <div class="question-block">
+            <p class="q-title">What is your current employment status?<span class="req">*</span></p>
+            <label class="option-row"><input type="radio" name="status" value="Unemployed, looking for work"> Unemployed, looking for work</label>
+            <label class="option-row"><input type="radio" name="status" value="Employed part-time / casual"> Employed part-time / casual</label>
+            <label class="option-row"><input type="radio" name="status" value="Employed full-time"> Employed full-time</label>
+            <label class="option-row"><input type="radio" name="status" value="Studying"> Studying</label>
+          </div>
+
+          <div class="question-block">
+            <p class="q-title">Which area/township do you currently live in?<span class="req">*</span></p>
+            <input type="text" class="text-line" name="location" placeholder="Short answer text">
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Section 2 — How you search for jobs</div>
+
+          <div class="question-block">
+            <p class="q-title">How do you usually search for jobs? (Select all that apply)<span class="req">*</span></p>
+            <label class="option-row"><input type="checkbox" name="search_method" value="WhatsApp groups"> WhatsApp groups</label>
+            <label class="option-row"><input type="checkbox" name="search_method" value="Facebook / social media"> Facebook / social media</label>
+            <label class="option-row"><input type="checkbox" name="search_method" value="Job search websites"> Job search websites (e.g. Indeed, PNet)</label>
+            <label class="option-row"><input type="checkbox" name="search_method" value="Word of mouth / family / friends"> Word of mouth / family / friends</label>
+            <label class="option-row"><input type="checkbox" name="search_method" value="Walking in / physically asking at businesses"> Walking in / physically asking at businesses</label>
+            <label class="option-row"><input type="checkbox" name="search_method" value="Other"> Other</label>
+          </div>
+
+          <div class="question-block">
+            <p class="q-title">What device do you use most for job searching?<span class="req">*</span></p>
+            <label class="option-row"><input type="radio" name="device" value="Smartphone"> Smartphone</label>
+            <label class="option-row"><input type="radio" name="device" value="Desktop / laptop computer"> Desktop / laptop computer</label>
+            <label class="option-row"><input type="radio" name="device" value="Internet café / shared computer"> Internet café / shared computer</label>
+            <label class="option-row"><input type="radio" name="device" value="Other"> Other</label>
+          </div>
+
+          <div class="question-block">
+            <p class="q-title">Roughly how much mobile data do you use per week specifically for job searching?</p>
+            <label class="option-row"><input type="radio" name="data_usage" value="Less than 100MB"> Less than 100MB</label>
+            <label class="option-row"><input type="radio" name="data_usage" value="100MB – 500MB"> 100MB – 500MB</label>
+            <label class="option-row"><input type="radio" name="data_usage" value="500MB – 1GB"> 500MB – 1GB</label>
+            <label class="option-row"><input type="radio" name="data_usage" value="More than 1GB"> More than 1GB</label>
+            <label class="option-row"><input type="radio" name="data_usage" value="Not sure"> Not sure</label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Section 3 — Experience trap</div>
+
+          <div class="question-block">
+            <p class="q-title">Have you ever been rejected from an entry-level job because you lacked experience?<span class="req">*</span></p>
+            <label class="option-row"><input type="radio" name="rejected" value="Yes"> Yes</label>
+            <label class="option-row"><input type="radio" name="rejected" value="No"> No</label>
+            <label class="option-row"><input type="radio" name="rejected" value="Not sure"> Not sure</label>
+          </div>
+
+          <div class="question-block">
+            <p class="q-title">How much does an "experience required" listing discourage you from applying?<span class="req">*</span></p>
+            <div class="scale-row">
+              <div class="scale-col"><input type="radio" name="exp_scale" value="1">1</div>
+              <div class="scale-col"><input type="radio" name="exp_scale" value="2">2</div>
+              <div class="scale-col"><input type="radio" name="exp_scale" value="3">3</div>
+              <div class="scale-col"><input type="radio" name="exp_scale" value="4">4</div>
+              <div class="scale-col"><input type="radio" name="exp_scale" value="5">5</div>
+            </div>
+            <div class="scale-labels"><span>Not at all</span><span>Completely puts me off</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Section 4 — Skills and preparation</div>
+
+          <div class="question-block">
+            <p class="q-title">Do you feel your schooling prepared you with the practical skills employers ask for?<span class="req">*</span></p>
+            <label class="option-row"><input type="radio" name="skills" value="Yes"> Yes</label>
+            <label class="option-row"><input type="radio" name="skills" value="Somewhat"> Somewhat</label>
+            <label class="option-row"><input type="radio" name="skills" value="No"> No</label>
+          </div>
+
+          <div class="question-block">
+            <p class="q-title">Which skills do you wish you'd been taught before looking for work?</p>
+            <input type="text" class="text-line" name="skills_wish" placeholder="Short answer text">
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Section 5 — Access to information and trust</div>
+
+          <div class="question-block">
+            <p class="q-title">Where do you usually find out about job openings?</p>
+            <input type="text" class="text-line" name="info_source" placeholder="Short answer text">
+          </div>
+
+          <div class="question-block">
+            <p class="q-title">Have you ever come across a job ad you suspected was a scam?<span class="req">*</span></p>
+            <label class="option-row"><input type="radio" name="scam" value="Yes"> Yes</label>
+            <label class="option-row"><input type="radio" name="scam" value="No"> No</label>
+            <label class="option-row"><input type="radio" name="scam" value="Not sure"> Not sure</label>
+          </div>
+
+          <div class="question-block">
+            <p class="q-title">How confident are you in telling a real job ad from a fake one?<span class="req">*</span></p>
+            <div class="scale-row">
+              <div class="scale-col"><input type="radio" name="confidence_scale" value="1">1</div>
+              <div class="scale-col"><input type="radio" name="confidence_scale" value="2">2</div>
+              <div class="scale-col"><input type="radio" name="confidence_scale" value="3">3</div>
+              <div class="scale-col"><input type="radio" name="confidence_scale" value="4">4</div>
+              <div class="scale-col"><input type="radio" name="confidence_scale" value="5">5</div>
+            </div>
+            <div class="scale-labels"><span>Not confident at all</span><span>Very confident</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Section 6 — Cost of job hunting</div>
+
+          <div class="question-block">
+            <p class="q-title">Roughly how much do you spend per month on transport, data and printing for job applications?<span class="req">*</span></p>
+            <label class="option-row"><input type="radio" name="cost" value="Nothing / very little"> Nothing / very little</label>
+            <label class="option-row"><input type="radio" name="cost" value="Under R100"> Under R100</label>
+            <label class="option-row"><input type="radio" name="cost" value="R100 – R300"> R100 – R300</label>
+            <label class="option-row"><input type="radio" name="cost" value="R300 – R500"> R300 – R500</label>
+            <label class="option-row"><input type="radio" name="cost" value="Over R500"> Over R500</label>
+          </div>
+
+          <div class="question-block">
+            <p class="q-title">Has cost ever stopped you from applying for a job or attending an interview?<span class="req">*</span></p>
+            <label class="option-row"><input type="radio" name="cost_stop" value="Yes"> Yes</label>
+            <label class="option-row"><input type="radio" name="cost_stop" value="No"> No</label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Section 7 — In your own words</div>
+
+          <div class="question-block">
+            <p class="q-title">What's the hardest part of looking for a job right now?</p>
+            <textarea class="text-area" name="hardest_part" rows="2" placeholder="Long answer text"></textarea>
+          </div>
+
+          <div class="question-block">
+            <p class="q-title">If you had an app to help you find work, what would it need to do for you to use it every day?</p>
+            <textarea class="text-area" name="app_needs" rows="2" placeholder="Long answer text"></textarea>
+          </div>
+        </div>
+
+        <div class="submit-row">
+          <button type="submit" class="btn" id="submitBtn">Submit</button>
+        </div>
+      </form>
+
+      <div class="footer-note">
+        Your response is saved securely for this questionnaire and used only for Team 11's research.
+      </div>
+    </div>
+
+    <!-- ===================== CONFIRMATION VIEW ===================== -->
+    <div id="view-confirm" class="hidden">
+      <div class="card" style="text-align:center;">
+        <div class="confirm-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#188038" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="section-title" style="color:var(--green); text-align:center;">Your response has been recorded</div>
+        <p style="font-size:14px; color:var(--text-secondary);">Thank you for taking the time to complete this questionnaire.</p>
+        <div class="code-box">
+          Your responses are saved under:
+          <div class="code" id="confirmEmail"></div>
+          <p style="font-size:12px;margin:8px 0 0;color:var(--text-secondary);">
+            You can use your email address to find all responses you have submitted.
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Your answers</div>
+        <div id="confirmAnswers"></div>
+      </div>
+      <div class="submit-row" style="justify-content:center;">
+        <button type="button" class="btn" onclick="resetForm()">Submit another response</button>
+      </div>
+    </div>
+
+    <!-- ===================== LOOKUP VIEW ===================== -->
+    <div id="view-lookup" class="hidden">
+      <div class="header-card">
+        <h1>View my saved responses</h1>
+        <p>Enter the same email address you used when submitting the questionnaire.</p>
+        <div class="lookup-row">
+          <input type="email" class="text-line" id="lookupEmail" placeholder="you@example.com" style="max-width:320px;" autocomplete="email">
+          <button type="button" class="btn" onclick="lookupResponse()">Find my responses</button>
+        </div>
+      </div>
+      <div id="lookupResult"></div>
+    </div>
+
+    <!-- ===================== ALL RESPONSES VIEW ===================== -->
+    <div id="view-all" class="hidden">
+      <div class="header-card">
+        <h1>All submitted responses</h1>
+        <p>For Team 11's research use — everyone who has submitted the questionnaire appears here.</p>
+        <div id="allCount"></div>
+      </div>
+      <div id="allResponses"><div class="spinner">Loading responses…</div></div>
+    </div>
+
+  </div>
+
+<script>
+// Paste your deployed Google Apps Script Web App URL here.
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygDEwj1LxrusxJUq5BfnFrUCXjyCXMAb49bo8pPF1Zm2i4_gqKkwIWGJur3HLPBKXj/exec";
+
+const QUESTION_LABELS = {
+  email: "Email address",
+  age: "Age range",
+  edu: "Highest level of education",
+  status: "Current employment status",
+  location: "Area/township",
+  search_method: "How they search for jobs",
+  device: "Device used most for job searching",
+  data_usage: "Weekly data used for job searching",
+  rejected: "Rejected before due to lack of experience",
+  exp_scale: "How much 'experience required' discourages applying (1-5)",
+  skills: "Schooling prepared them with practical skills",
+  skills_wish: "Skills they wish they'd been taught",
+  info_source: "Where they find out about jobs",
+  scam: "Encountered a suspected scam job ad",
+  confidence_scale: "Confidence spotting real vs fake ads (1-5)",
+  cost: "Monthly spend on job hunting",
+  cost_stop: "Cost ever stopped them applying/attending",
+  hardest_part: "Hardest part of job hunting right now",
+  app_needs: "What an app would need to do for daily use",
+};
+
+const REQUIRED_FIELDS = ["email","age","edu","status","location","search_method","device","rejected","exp_scale","skills","scam","confidence_scale","cost","cost_stop"];
+
+function showView(name){
+  document.getElementById('view-form').classList.add('hidden');
+  document.getElementById('view-confirm').classList.add('hidden');
+  document.getElementById('view-lookup').classList.add('hidden');
+  document.getElementById('view-all').classList.add('hidden');
+  document.getElementById('errorBanner').style.display = 'none';
+  document.getElementById('view-' + name).classList.remove('hidden');
+  if(name === 'all'){ loadAllResponses(); }
+}
+
+function generateCode(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for(let i=0;i<6;i++){ code += chars[Math.floor(Math.random()*chars.length)]; }
+  return code;
+}
+
+function collectFormData(form){
+  const data = {};
+  data.email = form.email.value.trim().toLowerCase();
+  data.age = form.age.value;
+  data.edu = form.edu.value;
+  data.status = form.status.value;
+  data.location = form.location.value.trim();
+  data.search_method = Array.from(form.querySelectorAll('input[name="search_method"]:checked')).map(el => el.value);
+  data.device = form.device.value;
+  data.data_usage = form.data_usage.value;
+  data.rejected = form.rejected.value;
+  data.exp_scale = form.exp_scale.value;
+  data.skills = form.skills.value;
+  data.skills_wish = form.skills_wish.value.trim();
+  data.info_source = form.info_source.value.trim();
+  data.scam = form.scam.value;
+  data.confidence_scale = form.confidence_scale.value;
+  data.cost = form.cost.value;
+  data.cost_stop = form.cost_stop.value;
+  data.hardest_part = form.hardest_part.value.trim();
+  data.app_needs = form.app_needs.value.trim();
+  return data;
+}
+
+function validate(data){
+  const missing = [];
+  REQUIRED_FIELDS.forEach(f => {
+    const v = data[f];
+    if(Array.isArray(v) ? v.length === 0 : !v){
+      missing.push(QUESTION_LABELS[f]);
+    }
+  });
+  return missing;
+}
+
+function renderAnswers(data, container){
+  container.innerHTML = '';
+  Object.keys(QUESTION_LABELS).forEach(key => {
+    const val = data[key];
+    if(val === undefined || val === '' || (Array.isArray(val) && val.length === 0)) return;
+    const row = document.createElement('div');
+    row.className = 'answer-row';
+    const displayVal = Array.isArray(val) ? val.join(', ') : val;
+    row.innerHTML = `<div class="q">${QUESTION_LABELS[key]}</div><div class="a">${escapeHtml(displayVal)}</div>`;
+    container.appendChild(row);
+  });
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+document.getElementById('quizForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const form = e.target;
+  const data = collectFormData(form);
+  const missing = validate(data);
+  const banner = document.getElementById('errorBanner');
+
+  if(missing.length > 0){
+    banner.style.display = 'block';
+    banner.textContent = 'Please answer these required questions: ' + missing.join(', ');
+    window.scrollTo({top:0, behavior:'smooth'});
+    return;
+  }
+  banner.style.display = 'none';
+
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Saving…';
+
+  const code = generateCode();
+  data.response_code = code;
+  data.submitted_at = new Date().toISOString();
+
+  try{
+    if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_YOUR")){
+      throw new Error("Google Apps Script URL has not been configured.");
+    }
+
+    await saveResponseToGoogleSheet(data);
+
+    document.getElementById('confirmEmail').textContent = data.email;
+    renderAnswers(data, document.getElementById('confirmAnswers'));
+    showView('confirm');
+  }catch(err){
+    banner.style.display = 'block';
+    banner.textContent = 'Something went wrong saving your response. Please try again.';
+    window.scrollTo({top:0, behavior:'smooth'});
+    console.error('Save error:', err);
+  }finally{
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit';
+  }
+});
+
+function resetForm(){
+  document.getElementById('quizForm').reset();
+  showView('form');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function lookupResponse(){
+  const emailInput = document.getElementById('lookupEmail');
+  const email = emailInput.value.trim().toLowerCase();
+  const resultDiv = document.getElementById('lookupResult');
+
+  if(!email){
+    resultDiv.innerHTML = '<div class="card"><p style="color:#d93025;font-size:14px;">Please enter your email address.</p></div>';
+    return;
+  }
+
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    resultDiv.innerHTML = '<div class="card"><p style="color:#d93025;font-size:14px;">Please enter a valid email address.</p></div>';
+    return;
+  }
+
+  if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_YOUR")){
+    resultDiv.innerHTML = '<div class="card"><p style="color:#d93025;font-size:14px;">The response database has not been connected yet.</p></div>';
+    return;
+  }
+
+  resultDiv.innerHTML = '<div class="spinner">Finding your saved responses…</div>';
+
+  googleJsonp(
+    APPS_SCRIPT_URL + '?action=lookup&email=' + encodeURIComponent(email),
+    function(payload){
+      if(!payload || !payload.ok){
+        resultDiv.innerHTML = '<div class="card"><p style="color:#d93025;font-size:14px;">Could not retrieve your responses. Please try again.</p></div>';
+        return;
+      }
+
+      const matches = payload.responses || [];
+      if(matches.length === 0){
+        resultDiv.innerHTML = '<div class="card"><p style="color:#d93025;font-size:14px;">No saved responses were found for that email address.</p></div>';
+        return;
+      }
+
+      resultDiv.innerHTML = '';
+      const heading = document.createElement('div');
+      heading.className = 'card';
+      heading.innerHTML = `<div class="section-title">Your saved responses</div>
+        <p style="font-size:13px;color:var(--text-secondary);margin:4px 0 0;">
+          ${matches.length} response${matches.length === 1 ? '' : 's'} found for ${escapeHtml(email)}.
+        </p>`;
+      resultDiv.appendChild(heading);
+
+      matches.forEach((data, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<div class="section-title">Response ${index + 1}</div>
+          <p style="font-size:12px;color:var(--text-secondary);margin-top:0;">
+            Submitted ${new Date(data.submitted_at).toLocaleString()}
+          </p>`;
+        const answersContainer = document.createElement('div');
+        renderAnswers(data, answersContainer);
+        card.appendChild(answersContainer);
+        resultDiv.appendChild(card);
+      });
+    }
+  );
+}
+
+function loadAllResponses(){
+  const listDiv = document.getElementById('allResponses');
+  const countDiv = document.getElementById('allCount');
+  listDiv.innerHTML = '<div class="spinner">Loading responses…</div>';
+
+  if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_YOUR")){
+    listDiv.innerHTML = '<div class="card"><p style="color:#d93025;font-size:14px;">The response database has not been connected yet.</p></div>';
+    return;
+  }
+
+  googleJsonp(
+    APPS_SCRIPT_URL + '?action=all',
+    function(payload){
+      if(!payload || !payload.ok){
+        listDiv.innerHTML = '<div class="card"><p style="color:#d93025;font-size:14px;">Could not load responses right now.</p></div>';
+        return;
+      }
+
+      const items = payload.responses || [];
+      countDiv.innerHTML = '<span class="stat-pill">' + items.length + ' response' + (items.length === 1 ? '' : 's') + ' collected</span>';
+
+      if(items.length === 0){
+        listDiv.innerHTML = '<div class="card"><p style="font-size:14px;color:var(--text-secondary);">No responses have been submitted yet.</p></div>';
+        return;
+      }
+
+      listDiv.innerHTML = '';
+      items.forEach((data, index) => {
+        const div = document.createElement('div');
+        div.className = 'response-item';
+        div.innerHTML = `<div class="meta">Response ${index + 1} · Submitted ${new Date(data.submitted_at).toLocaleString()}</div>`;
+        const answersContainer = document.createElement('div');
+        renderAnswers(data, answersContainer);
+        div.appendChild(answersContainer);
+        listDiv.appendChild(div);
+      });
+    }
+  );
+}
+
+function googleJsonp(url, callback){
+  const callbackName = 'questionnaireCallback_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+  const script = document.createElement('script');
+  const timeout = setTimeout(function(){
+    cleanup();
+    callback({ok:false});
+  }, 15000);
+
+  function cleanup(){
+    clearTimeout(timeout);
+    delete window[callbackName];
+    if(script.parentNode) script.parentNode.removeChild(script);
+  }
+
+  window[callbackName] = function(payload){
+    cleanup();
+    callback(payload);
+  };
+
+  script.onerror = function(){
+    cleanup();
+    callback({ok:false});
+  };
+
+  script.src = url + '&callback=' + encodeURIComponent(callbackName);
+  document.body.appendChild(script);
+}
+
+function saveResponseToGoogleSheet(data){
+  return new Promise(function(resolve, reject){
+    const iframe = document.createElement('iframe');
+    iframe.name = 'saveResponseFrame_' + Date.now();
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = APPS_SCRIPT_URL;
+    form.target = iframe.name;
+    form.style.display = 'none';
+
+    const input = document.createElement('textarea');
+    input.name = 'payload';
+    input.value = JSON.stringify(data);
+    form.appendChild(input);
+    document.body.appendChild(form);
+
+    let finished = false;
+    const timeout = setTimeout(function(){
+      if(finished) return;
+      finished = true;
+      cleanup();
+      reject(new Error('The save request timed out.'));
+    }, 15000);
+
+    iframe.onload = function(){
+      if(finished) return;
+      finished = true;
+      clearTimeout(timeout);
+      cleanup();
+      resolve();
+    };
+
+    function cleanup(){
+      form.remove();
+      iframe.remove();
+    }
+
+    form.submit();
+  });
+}
+</script>
+</body>
+</html>
